@@ -13,7 +13,7 @@ st.markdown("Summarize text using **FLAN-T5-XL** (abstractive) and **BERTSum** (
 # Load FLAN-T5 summarizer
 @st.cache_resource
 def load_abstractive_model():
-    model_name = "google/flan-t5-large"
+    model_name = "google/flan-t5-base"
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
     summarizer = pipeline("summarization", model=model, tokenizer=tokenizer)
