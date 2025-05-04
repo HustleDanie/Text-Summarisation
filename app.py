@@ -30,21 +30,26 @@ text = st.text_area("Enter your text (up to 1000 words):", height=300)
 if st.button("Generate Summaries"):
     if text:
         with st.spinner("Generating summaries..."):
-            # Load models
-            abstractive_summarizer = load_abstractive_model()
-            extractive_summarizer = load_extractive_model()
+            try:
+                # Load models
+                abstractive_summarizer = load_abstractive_model()
+                extractive_summarizer = load_extractive_model()
 
-            # Abstractive
-            abs_input = "Summarize this:\n" + text
-            abs_summary = abstractive_summarizer(abs_input, max_length=150, min_length=40, do_sample=False)[0]['summary_text']
+                # Abstractive
+                abs_input = "Summarize this:\n" + text
+                abs_summary = abstractive_summarizer(abs_input, max_length=150, min_length=40, do_sample=False)[0]['summary_text']
 
-            # Extractive
-            ext_summary = extractive_summarizer(text, num_sentences=5)
+                # Extractive
+                ext_summary = extractive_summarizer(text, num_sentences=5)
 
-        st.subheader("🔷 Abstractive Summary (FLAN-T5-XL)")
-        st.write(abs_summary)
+                # Display results
+                st.subheader("🔷 Abstractive Summary (FLAN-T5-XL)")
+                st.write(abs_summary)
 
-        st.subheader("🔶 Extractive Summary (BERTSum)")
-        st.write(ext_summary)
+                st.subheader("🔶 Extractive Summary (BERTSum)")
+                st.write(ext_summary)
+
+            except Exception as e:
+                st.error(f"❌ An error occurred:\n\n{e}")
     else:
-        st.warning("Please enter some text.")
+        st.warning("⚠️ Please enter some text.")
