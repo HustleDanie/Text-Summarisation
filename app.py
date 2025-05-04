@@ -3,8 +3,7 @@ import streamlit as st
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, pipeline
 from summarizer import Summarizer
 import nltk
-import traceback
-import matplotlib.pyplot as plt
+import pandas as pd
 
 # Download NLTK punkt tokenizer
 nltk.download('punkt')
@@ -12,9 +11,9 @@ nltk.download('punkt')
 # Title
 st.title("📄 Dual-Mode Text Summarizer")
 st.markdown("This app provides two types of text summarization using pretrained models:")
-st.markdown(" **Abstractive Summarization** with `T5-Small` (generates new sentences)")
-st.markdown(" **Extractive Summarization** with `BERTSum` (extracts key sentences from original text)")
-
+st.markdown("- 🔷 **Abstractive Summarization** with `T5-Small` (generates new sentences)")
+st.markdown("- 🔶 **Extractive Summarization** with `BERTSum` (extracts key sentences from original text)")
+st.markdown("---")
 
 # Load T5-Small summarizer (Abstractive)
 @st.cache_resource
@@ -44,12 +43,12 @@ if st.button("Generate Summaries"):
                 extractive_summarizer = load_extractive_model()
 
                 # Run abstractive summarization
-                abs_summary = abstractive_summarizer("summarize: " + text, max_length=150, min_length=40, do_sample=False)[0]['summary_text']
+                abs_summary = abstractive_summarizer("summarize: " + text, max_length=100, min_length=30, do_sample=False)[0]['summary_text']
 
                 # Run extractive summarization
                 ext_summary = extractive_summarizer(text, num_sentences=5)
 
-                # Display the outputs with explanation and emojis
+                # Display summaries
                 st.markdown("---")
                 st.subheader("🔷 Abstractive Summary")
                 st.markdown(
@@ -64,27 +63,23 @@ if st.button("Generate Summaries"):
                 )
                 st.info(ext_summary)
 
-                # Create and display summary length comparison chart
+                # Show a bar chart using Streamlit-native charting
                 st.markdown("---")
                 st.subheader("📊 Word Count Comparison")
-                fig, ax = plt.subplots()
-                labels = ['Original Text', 'Abstractive Summary', 'Extractive Summary']
-                word_counts = [len(text.split()), len(abs_summary.split()), len(ext_summary.split())]
-                ax.bar(labels, word_counts, color=['gray', 'skyblue', 'orange'])
-                ax.set_ylabel("Number of Words")
-                ax.set_title("Word Count Comparison Between Methods")
-                st.pyplot(fig)
+                df = pd.DataFrame({
+                    "Summary Type": ["Original Text", "Abstractive", "Extractive"],
+                    "Word Count": [len(text.split()), len(abs_summary.split()), len(ext_summary.split())]
+                })
+                st.bar_chart(df.set_index("Summary Type"))
 
                 st.markdown(
-                    "This chart helps visualize how each summarization method compresses the original content.\n\n"
+                    "This chart helps visualize how each summarization method compresses the original content:\n\n"
                     "- **Abstractive** tends to paraphrase and condense.\n"
                     "- **Extractive** keeps full original sentences, so it's usually longer."
                 )
 
             except Exception as e:
                 st.error(f"❌ An error occurred:\n\n{e}")
-                traceback.print_exc()
+                # traceback.print_exc()  # Disabled for Streamlit Cloud performance
     else:
         st.warning("⚠️ Please enter some text to summarize.")
-
-
