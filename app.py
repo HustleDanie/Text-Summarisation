@@ -15,7 +15,7 @@ st.markdown("Summarize text abstractive and extractively")
 # Load T5-Small summarizer
 @st.cache_resource
 def load_abstractive_model():
-    model_name = "sshleifer/distilbart-cnn-12-6"
+    model_name = "huseinzol05/abstractive-summarization-v2-small-bigbird-quantized"
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
     summarizer = pipeline("summarization", model=model, tokenizer=tokenizer)
