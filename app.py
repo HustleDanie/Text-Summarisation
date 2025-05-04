@@ -3,6 +3,7 @@ import streamlit as st
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, pipeline
 from summarizer import Summarizer
 import nltk
+import traceback
 
 nltk.download('punkt')
 
@@ -51,5 +52,6 @@ if st.button("Generate Summaries"):
 
             except Exception as e:
                 st.error(f"❌ An error occurred:\n\n{e}")
+                traceback.print_exc()
     else:
         st.warning("⚠️ Please enter some text.")
