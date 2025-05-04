@@ -9,12 +9,12 @@ nltk.download('punkt')
 
 # Title
 st.title("📄 Dual-Mode Text Summarizer")
-st.markdown("Summarize text using **FLAN-T5-XL** (abstractive) and **BERTSum** (extractive)")
+st.markdown("Summarize text using **DistilBART** (abstractive) and **BERTSum** (extractive)")
 
-# Load FLAN-T5 summarizer
+# Load DistilBART summarizer
 @st.cache_resource
 def load_abstractive_model():
-    model_name = "google/flan-t5-base"
+    model_name = "sshleifer/distilbart-cnn-12-6"
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
     summarizer = pipeline("summarization", model=model, tokenizer=tokenizer)
@@ -44,7 +44,7 @@ if st.button("Generate Summaries"):
                 ext_summary = extractive_summarizer(text, num_sentences=5)
 
                 # Display results
-                st.subheader("🔷 Abstractive Summary (FLAN-T5-XL)")
+                st.subheader("🔷 Abstractive Summary (DistilBART)")
                 st.write(abs_summary)
 
                 st.subheader("🔶 Extractive Summary (BERTSum)")
