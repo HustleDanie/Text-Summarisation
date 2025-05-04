@@ -10,7 +10,7 @@ nltk.download('punkt')
 
 # Title
 st.title("📄 Dual-Mode Text Summarizer")
-st.markdown("Summarize text abstractive and extractively)
+st.markdown("Summarize text abstractive and extractively")
 
 # Load T5-Small summarizer
 @st.cache_resource
