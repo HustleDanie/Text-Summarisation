@@ -10,48 +10,63 @@ nltk.download('punkt')
 
 # Title
 st.title("📄 Dual-Mode Text Summarizer")
-st.markdown("Summarize text abstractive and extractively")
+st.markdown("This app provides two types of text summarization using pretrained models:")
+st.markdown("- 🔷 **Abstractive Summarization** with `T5-Small` (generates new sentences)")
+st.markdown("- 🔶 **Extractive Summarization** with `BERTSum` (extracts key sentences from original text)")
+st.markdown("---")
 
-# Load T5-Small summarizer
+# Load T5-Small summarizer (Abstractive)
 @st.cache_resource
 def load_abstractive_model():
-    model_name = "huseinzol05/abstractive-summarization-v2-small-bigbird-quantized"
+    model_name = "t5-small"
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
     summarizer = pipeline("summarization", model=model, tokenizer=tokenizer)
     return summarizer
 
-# Load BERTSum model
+# Load BERTSum model (Extractive)
 @st.cache_resource
 def load_extractive_model():
     return Summarizer()
 
-# Input text area
+# Input area for text to be summarized
+st.markdown("### 📝 Input Text")
 text = st.text_area("Enter your text (up to 1000 words):", height=300)
 
+# Run summarization when user clicks the button
 if st.button("Generate Summaries"):
     if text:
-        with st.spinner("Generating summaries..."):
+        with st.spinner("⏳ Generating summaries..."):
             try:
-                # Load models
+                # Load summarization models
                 abstractive_summarizer = load_abstractive_model()
                 extractive_summarizer = load_extractive_model()
 
-                # Abstractive summarization
+                # Run abstractive summarization
                 abs_summary = abstractive_summarizer("summarize: " + text, max_length=150, min_length=40, do_sample=False)[0]['summary_text']
 
-                # Extractive summarization
+                # Run extractive summarization
                 ext_summary = extractive_summarizer(text, num_sentences=5)
 
-                # Display results
-                st.subheader("🔷 Abstractive Summary (T5-Small)")
-                st.write(abs_summary)
+                # Display the outputs with explanation and emojis
+                st.markdown("---")
+                st.subheader("🔷 Abstractive Summary")
+                st.markdown(
+                    "This summary is **generated in new words** by the model (T5-Small), so it might rephrase or restructure sentences."
+                )
+                st.success(abs_summary)
 
-                st.subheader("🔶 Extractive Summary (BERTSum)")
-                st.write(ext_summary)
+                st.markdown("---")
+                st.subheader("🔶 Extractive Summary")
+                st.markdown(
+                    "This summary is **copied directly from the original** text. The BERTSum model selects the top 5 most important sentences."
+                )
+                st.info(ext_summary)
 
             except Exception as e:
                 st.error(f"❌ An error occurred:\n\n{e}")
                 traceback.print_exc()
     else:
-        st.warning("⚠️ Please enter some text.")
+        st.warning("⚠️ Please enter some text to summarize.")
+
+
