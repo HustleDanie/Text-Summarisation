@@ -10,12 +10,12 @@ nltk.download('punkt')
 
 # Title
 st.title("📄 Dual-Mode Text Summarizer")
-st.markdown("Summarize text using **T5-Small** (abstractive) and **BERTSum** (extractive)")
+st.markdown("Summarize text abstractive and extractively)
 
 # Load T5-Small summarizer
 @st.cache_resource
 def load_abstractive_model():
-    model_name = "t5-small"
+    model_name = "sshleifer/distilbart-cnn-12-6"
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
     summarizer = pipeline("summarization", model=model, tokenizer=tokenizer)
