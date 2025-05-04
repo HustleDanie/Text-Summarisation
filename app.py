@@ -9,11 +9,11 @@ import pandas as pd
 nltk.download('punkt')
 
 # Title
-st.title("📄 Dual-Mode Text Summarizer")
+st.title("Dual-Mode Text Summarizer")
 st.markdown("This app provides two types of text summarization using pretrained models:")
-st.markdown("- 🔷 **Abstractive Summarization** with `T5-Small` (generates new sentences)")
-st.markdown("- 🔶 **Extractive Summarization** with `BERTSum` (extracts key sentences from original text)")
-st.markdown("---")
+st.markdown(" **Abstractive Summarization** with `T5-Small` (generates new sentences)")
+st.markdown(" **Extractive Summarization** with `BERTSum` (extracts key sentences from original text)")
+
 
 # Load T5-Small summarizer (Abstractive)
 @st.cache_resource
@@ -49,14 +49,14 @@ if st.button("Generate Summaries"):
                 ext_summary = extractive_summarizer(text, num_sentences=5)
 
                 # Display summaries
-                st.markdown("---")
-                st.subheader("🔷 Abstractive Summary")
+                
+                st.subheader(" Abstractive Summary")
                 st.markdown(
                     "This summary is **generated in new words** by the model (T5-Small), so it might rephrase or restructure sentences."
                 )
                 st.success(abs_summary)
 
-                st.markdown("---")
+                
                 st.subheader("🔶 Extractive Summary")
                 st.markdown(
                     "This summary is **copied directly from the original** text. The BERTSum model selects the top 5 most important sentences."
