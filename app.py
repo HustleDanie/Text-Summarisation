@@ -4,6 +4,7 @@ from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, pipeline
 from summarizer import Summarizer
 import nltk
 import traceback
+import matplotlib.pyplot as plt
 
 # Download NLTK punkt tokenizer
 nltk.download('punkt')
@@ -11,9 +12,9 @@ nltk.download('punkt')
 # Title
 st.title("📄 Dual-Mode Text Summarizer")
 st.markdown("This app provides two types of text summarization using pretrained models:")
-st.markdown("- 🔷 **Abstractive Summarization** with `T5-Small` (generates new sentences)")
-st.markdown("- 🔶 **Extractive Summarization** with `BERTSum` (extracts key sentences from original text)")
-st.markdown("---")
+st.markdown(" **Abstractive Summarization** with `T5-Small` (generates new sentences)")
+st.markdown(" **Extractive Summarization** with `BERTSum` (extracts key sentences from original text)")
+
 
 # Load T5-Small summarizer (Abstractive)
 @st.cache_resource
@@ -62,6 +63,23 @@ if st.button("Generate Summaries"):
                     "This summary is **copied directly from the original** text. The BERTSum model selects the top 5 most important sentences."
                 )
                 st.info(ext_summary)
+
+                # Create and display summary length comparison chart
+                st.markdown("---")
+                st.subheader("📊 Word Count Comparison")
+                fig, ax = plt.subplots()
+                labels = ['Original Text', 'Abstractive Summary', 'Extractive Summary']
+                word_counts = [len(text.split()), len(abs_summary.split()), len(ext_summary.split())]
+                ax.bar(labels, word_counts, color=['gray', 'skyblue', 'orange'])
+                ax.set_ylabel("Number of Words")
+                ax.set_title("Word Count Comparison Between Methods")
+                st.pyplot(fig)
+
+                st.markdown(
+                    "This chart helps visualize how each summarization method compresses the original content.\n\n"
+                    "- **Abstractive** tends to paraphrase and condense.\n"
+                    "- **Extractive** keeps full original sentences, so it's usually longer."
+                )
 
             except Exception as e:
                 st.error(f"❌ An error occurred:\n\n{e}")
